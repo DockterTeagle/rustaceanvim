@@ -6,6 +6,13 @@
 
     flake-parts.url = "github:hercules-ci/flake-parts";
 
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -181,6 +188,7 @@
             plugin-overlay
           ];
         };
+        imports = [./devenv.nix];
         devShells = {
           default = devShell;
           inherit devShell;

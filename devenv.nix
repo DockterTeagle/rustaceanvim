@@ -1,0 +1,3 @@
+{
+  devenv.shells.default = {};
+}
