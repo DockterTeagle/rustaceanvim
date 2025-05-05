@@ -1,6 +1,7 @@
 result
 result-*
 .direnv
+.devenv
 .luarc.json
 .repro
 .pre-commit-config.yaml

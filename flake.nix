@@ -5,12 +5,17 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
 
     devenv = {
       url = "github:cachix/devenv";
       inputs = {
         flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
       };
     };
     git-hooks = {
@@ -68,8 +73,10 @@
         "x86_64-darwin"
         "aarch64-darwin"
       ];
-      imports = [
+      imports = with inputs; [
         git-hooks.flakeModule
+        devenv.flakeModule
+        treefmt-nix.flakeModule
       ];
       perSystem = {
         config,
@@ -132,12 +139,8 @@
         pre-commit-check = git-hooks.lib.${system}.run {
           src = self;
           hooks = {
-            statix.enable = true;
-            alejandra.enable = true;
-            stylua.enable = true;
             luacheck.enable = true;
             editorconfig-checker.enable = true;
-            markdownlint.enable = true;
             docgen = {
               enable = true;
               name = "docgen";
@@ -188,11 +191,11 @@
             plugin-overlay
           ];
         };
-        imports = [./devenv.nix];
-        devShells = {
-          default = devShell;
-          inherit devShell;
-        };
+        imports = [./nix/flakeModules];
+        # devShells = {
+        #   default = devShell;
+        #   inherit devShell;
+        # };
 
         packages = rec {
           default = rustaceanvim;
